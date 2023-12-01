@@ -7,15 +7,22 @@
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
+		//to install JAGS 
+		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+			"packages": "jags"			
+		},
 		// to install r packages using pak
 		// more info: https://github.com/rocker-org/devcontainer-features/blob/main/src/r-packages/README.md
 		 "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-			"packages": "quarto,this.path,magrittr,dplyr,stringr,ggplot2,rjags,PIFSCstockassessments/JABBA@PIFSC-dev",
+			"packages": "pacman,quarto,this.path,magrittr,dplyr,stringr,ggplot2,rjags,PIFSCstockassessments/JABBA@PIFSC-dev",
 			 "installSystemRequirements": true
 		  },
 	// // for quarto cli
 	     // more info: https://github.com/rocker-org/devcontainer-features/blob/main/src/quarto-cli/README.md
-	     "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {}
+	     "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
+
+		 //to use Rstudio as IDE instead of VS code
+		 "ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {}
 	 },
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -30,11 +37,7 @@
 	 		// Set *default* container specific settings.json values on container create.
 	 		// Add the IDs of extensions you want installed when the container is created.
 	 		"extensions": [
-				 "GitHub.codespaces",
-				 "matepek.vscode-catch2-text-adapter",
-				 "hbenl.vscode-test-explorer",
-				 "reditorsupport.r"
-				 
+				 "GitHub.codespaces"
 	 		]
 	     }
 	 

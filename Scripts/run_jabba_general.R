@@ -2,8 +2,8 @@
 
 #packages 
 #install.packages("remotes")
-install.packages("pacman")
-remotes::install_github("PIFSCstockassessments/JABBA", ref="PIFSC-dev")
+#install.packages("pacman")
+#remotes::install_github("PIFSCstockassessments/JABBA", ref="PIFSC-dev")
 pacman::p_load(JABBA, quarto, this.path, magrittr, dplyr, stringr)
 
 #Setting a path variable so you do not need to set working directory.
