@@ -1,4 +1,23 @@
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ac nibh gravida, fermentum urna eget, iaculis purus. In in commodo turpis. Duis ut arcu eget ante suscipit scelerisque quis ultrices nibh. In porttitor, nisi eget ullamcorper consectetur, erat lorem porttitor orci, at facilisis ex nunc. 
+# Main Hawaiian Islands Deep 7 2024 Assessment
+This repository hosts the materials needed to run the base case model for the Deep 7 2024 stock assessment report. 
+
+To start, clone the [Deep7-2024-WPSAR](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR) repository or download as [main.zip](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR/archive/refs/heads/main.zip). 
+
+## Inputs  
+
+### Data 
+All necessary data files are stored in `./Data`: 
+    
+* CPUE.csv (annual values for FRS and BFISH indices: columns YEAR, FRS, BFISH)
+* SE.csv (annual SE and CV values for FRS and BFISH indices respectively: columns YEAR, FRS, BFISH)
+* Total_catch.csv (annul total catch in pounds)
+
+### Model parameter inputs
+Parameter values for model input (to specify `build_jabba()`) are stored in `./Data/JABBA_inputs.csv`. 
+
+## Running the Model  
+Use the R script `./Scripts/run_jabba_general.R` to read in all data, prepare the data for JABBA, run the base case model, run a summary output report, and run projections. 
+*Note* You need to have installed the [PIFSC-dev branch](https://github.com/PIFSCstockassessments/JABBA/tree/PIFSC-dev) to run the model. Descriptions of all modifications and additions to the JABBA code can be found in the README of the [JABBA repository](https://github.com/PIFSCstockassessments/JABBA).
 
 ## Github Disclaimer
 

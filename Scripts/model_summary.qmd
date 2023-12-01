@@ -1,0 +1,229 @@
+---
+title: "JABBA Summary"
+format: 
+  html:
+    self-contained: true
+date: "`r Sys.Date()`"
+params: 
+  scenario: "build_output_report"
+---
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+
+library(knitr)
+library(JABBA)
+library(gt)
+library(ggplot2)
+library(GGally)
+library(dplyr)
+load(here::here("Final_Model_Runs", params$scenario, "fit_test.Rdata"))
+load(here::here("Final_Model_Runs", params$scenario, "jbinput.Rdata"))
+#load(here::here("Results", params$scenario, "param.names.Rdata"))
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+## Model Summary
+
+Summary report for `r params$scenario`.
+
+::: panel-tabset
+## Input Data
+
+```{r}
+#| warning: false
+#| label: inputdata
+fit_test$inputseries$cpue %>% 
+  dplyr::rename("X" = 1) %>% 
+  tidyr::pivot_longer(cols = -X, names_to = "Index") %>% 
+  dplyr::filter(!is.na(value)) %>% 
+  ggplot(aes(x = X, y = value, group = Index, color = Index)) +
+  geom_point() +
+  geom_line() + 
+  theme_minimal() +
+  facet_wrap(~Index, scales = "free") +
+  labs(x = "Year", y = "Index of Abundance", title = "CPUE Data")
+
+fit_test$inputseries$catch %>% 
+  ggplot(aes(x = Year, y = Catch)) +
+  geom_point() +
+  geom_line() + 
+  theme_minimal() +
+  labs(x = "Year", y = "Catch (millions lbs)", title = "Catch Data")
+```
+
+## Parameter Distributions
+
+```{r}
+#| label: paramdist
+jbplot_ppdist(fit_test, verbose = FALSE, addPP = F)
+jbplot_ppderived(fit_test, verbose = FALSE, addPP = F)
+
+```
+
+## MCMC Diagnostics
+
+```{r}
+#| label: mcmc
+jbplot_mcmc(fit_test, verbose = FALSE)
+gt(fit_test$pars, rownames_to_stub = T) %>% fmt_number(decimals = 3)
+
+```
+
+## Posterior Predictive Checks
+
+Rule of thumb: p = 0.5 is ideal and range between 0.2 and 0.8 is acceptable. This tests whether the model error assumptions are consistent with the underlying data generation process. Bayesian p-value is the probability that the mean (or other summary statistic) of the data generated from posterior distribution is greater than the mean (or other summary statistic) of the observed data. If the p-value is near 1 or 0, our simulated data is not similar to the observed data.
+
+```{r}
+jbplot_PPC(fit_test, add = T, verbose = F)
+```
+
+## Parameter Correlation
+
+```{r}
+#| message: false
+#| label: paramcorr
+
+param.names <- jbinput$settings$params
+if(length(grep("rad", param.names)) > 0){
+  par.dat= data.frame(fit_test$posteriors[param.names[c(1:7,25)]]) #25 for rad
+  my_labeller <- as_labeller(c(K = "K", r = "r", q.1 = "q[1]",
+                               q.2 = "q[2]", psi = "psi",
+                               sigma2 = "sigma^2", tau2 = "tau^2",
+                               m = "m", rad = "radius"),default = label_parsed)
+}else{
+  par.dat= data.frame(fit_test$posteriors[param.names[c(1:7)]]) 
+  my_labeller <- as_labeller(c(K = "K", r = "r", q.1 = "q[1]",
+                               q.2 = "q[2]", psi = "psi",
+                               sigma2 = "sigma^2", tau2 = "tau[1]^2",
+                               m = "m"),default = label_parsed)
+}
+
+ggpairs(par.dat,
+        diag = list(continuous = "blankDiag"),
+        labeller = my_labeller)
+```
+
+## Catch
+
+```{r}
+#| label: catch_error
+jbplot_catcherror(fit_test, verbose = F)
+```
+
+## Index Fits
+
+```{r}
+#| label: indexfits
+jbplot_cpuefits(fit_test, verbose = F)
+jbplot_logfits(fit_test, verbose = F)
+```
+
+## Residual Diagnostics
+
+```{r}
+#| label: residuals
+jbplot_runstest(fit_test, verbose = F)
+jbplot_residuals(fit_test, verbose = F)
+```
+
+## Observation Error
+
+```{r}
+#| label: TOE
+jbplot_TOE(fit_test, verbose = F)
+```
+
+## Process Error
+
+```{r}
+#| label: procE
+jbplot_procdev(fit_test, verbose = F)
+```
+
+## SSB
+
+```{r}
+#| label: ssb
+
+bfrac = jbinput$jagsdata$bfrac
+MSST = addBfrac(fit_test$kbtrj,bfrac=bfrac,bref="bmsy")$kb
+bfrac_line = median(MSST$Bref)
+bmsy_line = median(MSST$B/MSST$stock)
+kbs = aggregate(cbind(B,BB0,BBfrac)~year+run,MSST,
+                   quantile, c(0.5,0.025,0.975))
+
+b <- kbs[,"B"]
+md <- b[,1]
+li <- b[,2]
+ui <- b[,3]
+cbind(year = kbs$year, md, li, ui) %>%
+  as.data.frame() %>%
+  ggplot(aes(x = year)) +
+  geom_ribbon(aes(ymin = li, ymax = ui), fill = "grey70") +
+  geom_line(aes(y = md)) +
+  geom_hline(yintercept = bfrac_line, linetype = "dashed", color="red") +
+  #geom_hline(yintercept = bmsy_line, linetype = "dashed", color = "black") +
+  labs(x = "Year", y = paste0("Biomass (", jbinput$settings$catch.metric, ")")) +
+  theme_classic()
+
+
+```
+
+## F
+
+```{r}
+#| label: Ftraj
+
+#jbplot_trj(fit_test, type = "F", verbose = FALSE, ylabs = "Harvest Rate")
+fmsy <- fit_test$refpts$fmsy[1]
+fit_test$timeseries[,,"F"] %>% 
+  as.data.frame() %>% 
+  mutate(Year = as.numeric(rownames(.))) %>% 
+  ggplot(aes(x = Year)) + 
+  geom_ribbon(aes(ymin =lci, ymax = uci), fill = "grey70") +
+  geom_line(aes(y = mu)) + 
+  geom_hline(yintercept = fmsy, linetype = "dashed") + 
+  labs(x = "Year", y = "Harvest Rate") +
+  theme_classic()
+```
+
+## Stock Status
+
+```{r}
+#| label: kobe
+jbplot_kobe_bfrac(fit_test, bfrac = bfrac, verbose = F, ylab = expression(H/H[MSY]))
+
+```
+
+## Retrospectives
+
+```{r}
+#| warning: false
+#| label: retrospectives
+
+hc = hindcast_jabba(jbinput, fit_test, peels = 1:5, ni=100000, nt=10, nb=20000, nc=3, quickmcmc = FALSE, init.values = FALSE)
+
+retro = jbplot_retro(hc, type = "B", single.plots = T, verbose = FALSE)
+retro = jbplot_retro(hc, type = "BBfrac", single.plots = T, verbose = FALSE)
+retro = jbplot_retro(hc, type = "F", single.plots = T, verbose = FALSE, ylabs = "Harvest Rate")
+retro = jbplot_retro(hc, type = "FFmsy", single.plots = T, verbose = FALSE, ylabs = expression(H/H[MSY]))
+retro = jbplot_retro(hc, type = "SP", single.plots = T, verbose = FALSE)
+
+```
+
+## Hindcast
+
+```{r}
+#| label: hindcast
+
+
+n.inds <- jbinput$jagsdata$nq
+jbpar(mfrow = c(1,n.inds))
+jbplot_hcxval(hc, minyr = 2015, verbose = F, add = TRUE)
+
+```
+:::
