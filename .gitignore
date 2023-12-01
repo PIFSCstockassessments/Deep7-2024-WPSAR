@@ -7,6 +7,7 @@
 
 # Session Data files
 .RData
+*.Rdata 
 
 # User-specific files
 .Ruserdata
@@ -102,3 +103,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# CSVs
+*.csv 
+
+# JAGS output
+*.jags 
+

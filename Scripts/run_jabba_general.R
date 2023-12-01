@@ -4,20 +4,25 @@
 #install.packages("remotes")
 install.packages("pacman")
 remotes::install_github("PIFSCstockassessments/JABBA", ref="PIFSC-dev")
-pacman::p_load(JABBA, quarto, this.path)
+pacman::p_load(JABBA, quarto, this.path, magrittr, dplyr, stringr)
 
+#Setting a path variable so you do not need to set working directory.
 main_dir <- this.path::here(..=1)
 
+#Define the scenario name here, this is used throughout the script to create the directory, call the correct input parameters, and run analyses.
 scenario = "001_Base_case"
 
+#Create directory for model run
 if(!dir.exists(file.path(main_dir, "Model", scenario))){
   dir.create(file.path(main_dir, "Model", scenario))
 }
 
+#File with input parameter values
+### NOTE: Make sure the scenario name matches what you defined scenario to be in line 13
 jb.params <- read.csv(file.path(main_dir, "Data", "JABBA_inputs.csv"))
 
 ### Catch
-d7_catch<-read.csv(file.path(main_dir, "Data", "Total_catch_2023.csv")) 
+d7_catch<-read.csv(file.path(main_dir, "Data", "Total_catch.csv")) 
 d7_catch$Catch<-d7_catch$Catch/1000000 
 
 ### CPUE
@@ -26,14 +31,9 @@ d7_cpue <-read.csv(file.path(main_dir, "Data", "CPUE.csv"))
 ### SE  
 d7_se <- read.csv(file.path(main_dir, "Data", "SE.csv")) 
 
-d7_se_log<-data.frame("Year" = d7_se$Year, "FRS" =  d7_se$FRS/d7_cpue$FRS, "BFISH" = d7_se$BFISH) 
-d7_se_log$FRS<-sqrt(log(d7_se_log$FRS*d7_se_log$FRS+1)) 
-
-d7_se_log$BFISH<- sqrt(log(d7_se_log$BFISH*d7_se_log$BFISH+1))
-
-
+#Build jabba input object
   jbinput = build_jabba(catch=d7_catch,
-                        cpue=d7_cpue,se=d7_se_log,
+                        cpue=d7_cpue,se=d7_se,
                         assessment="Deep7",scenario = scenario,
                         model.type =jb.params$model.type,
                         add.catch.CV = jb.params$add.catch.cv,
@@ -60,15 +60,16 @@ d7_se_log$BFISH<- sqrt(log(d7_se_log$BFISH*d7_se_log$BFISH+1))
                         bfrac = jb.params$bfrac,
                         verbose=TRUE)
   
-  #fit                      
+  #Run jabba model and save outputs                     
   fit_test = fit_jabba(jbinput,ni=150000,nt=10,nb=50000,nc=3,verbose=TRUE,
                        save.csvs = TRUE,do.ppc=TRUE,save.all = TRUE,
                        output.dir=file.path(main_dir,"Model",scenario),
                        jagsdir = file.path(main_dir,"Model",scenario)) 
 
-  save(jbinput, file = file.path(main_dir, "Final_Model_Runs", scenario, "jbinput.Rdata"))
-  save(fit_test, file = file.path(main_dir, "Final_Model_Runs", scenario, "fit_test.Rdata"))
+  save(jbinput, file = file.path(main_dir, "Model", scenario, "jbinput.Rdata"))
+  save(fit_test, file = file.path(main_dir, "Model", scenario, "fit_test.Rdata"))
   
+  #Copy summary report qmd to model directory and render report
   file.copy(from = file.path(main_dir,"Scripts",
                              "model_summary.qmd"), 
             to = file.path(main_dir, "Model", scenario,
@@ -98,7 +99,7 @@ projTAC<-unique(kjp$tac) #integers for each TAC level
 TACs <-  seq(0,2000000,10000) #Catch scenarios in lbs (not million lbs as in imp.values = seq(0,1,.001))
 TACkey <- cbind(tac = as.numeric(projTAC), TACs = as.numeric(TACs), reportTAC= as.numeric(TACs/(1+UCR)))
 
-## summarise risks of biomass overfished/overfishing
+#Summarise risks of biomass overfished/overfishing
 proj.summary <- 
   kjp %>% 
   data.frame() %>%
@@ -113,3 +114,24 @@ proj.summary <-
   data.frame() %>%
   merge(.,TACkey, by = "tac", all.y = F) 
 
+#Create overfishing risk tables 
+
+oflrisk<-seq(0.0,0.5, 0.01)
+
+T9brisk <- T9bio <- T9Hrate <- table10 <- matrix(NA,ncol = 6, nrow = length(oflrisk))
+colnames(T9brisk) <- colnames(T9bio) <- colnames(T9Hrate) <- colnames(table10) <- c('Overfishing.Risk',2025:2029)
+T9brisk[,1] <- T9bio[,1] <- T9Hrate[,1] <- table10[,1]  <- oflrisk
+
+for(y in 1:length(unique(projyears))){ ## iterate years
+  for(i in 1:length(unique(oflrisk))){ ## iterate unique risk levels
+    pjtemp <- subset(proj.summary, year == unique(projyears)[y])
+    ## find predicted risk that is at or LESS THAN increment
+    maxless <- with(pjtemp,   max(riskF[riskF <= oflrisk[i]]))
+    if(maxless > oflrisk[i] ) stop("exceeded OFL risk") ## error trap
+    idx <- which(pjtemp$riskF == maxless)[1] ## find index at TAC [take first if returns two]
+    table10[i,y+1] <- pjtemp[idx,"reportTAC"] ## assign pounds reported catch
+    T9brisk[i,y+1] <- pjtemp[idx,"riskB"] #probability the stock is overfished
+    T9bio[i,y+1] <- pjtemp[idx,"ofishedB"] #Biomass
+    T9Hrate[i,y+1] <- pjtemp[idx,"ofishedH"] #harvest rate
+  }
+}

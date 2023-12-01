@@ -5,7 +5,7 @@ format:
     self-contained: true
 date: "`r Sys.Date()`"
 params: 
-  scenario: "build_output_report"
+  scenario: "001_Base_case"
 ---
 
 ```{r}
@@ -19,9 +19,9 @@ library(gt)
 library(ggplot2)
 library(GGally)
 library(dplyr)
-load(here::here("Final_Model_Runs", params$scenario, "fit_test.Rdata"))
-load(here::here("Final_Model_Runs", params$scenario, "jbinput.Rdata"))
-#load(here::here("Results", params$scenario, "param.names.Rdata"))
+load(here::here("Model", params$scenario, "fit_test.Rdata"))
+load(here::here("Model", params$scenario, "jbinput.Rdata"))
+
 knitr::opts_chunk$set(echo = FALSE)
 
 ```
