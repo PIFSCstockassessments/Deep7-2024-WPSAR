@@ -2,17 +2,16 @@
 This repository hosts the materials needed to run the base case model for the Deep 7 2024 stock assessment report. 
 
 ## Set up
-#### Local Machine
-There are two recommended ways to run the code, locally on your personal computer or in the repository using the codespaces. To run locally, you will need to make sure you have the latest version of [JAGS](https://sourceforge.net/projects/mcmc-jags/) installed on your computer and clone the [Deep7-2024-WPSAR](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR) repository or download as [main.zip](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR/archive/refs/heads/main.zip). 
-
-If you do not wish to install JAGS, you can run all the code in a virtual machine through the Github Codespaces. 
-
 #### Codespaces 
 The Codespaces environment allows you to run all model code using a virtual machine and all necessary packages are pre-loaded in the environment. There is no setup involved with this method and is the recommended approach. 
 
 To open an instance of codespaces, in the repository [main page](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR/tree/main) click the green `Code` dropdown button. Select `open new codespace` option. It will take a few minutes for a machine to load and you will see an instance of VS code open when it has loaded. At the bottom a terminal window will open and in the right corner you can click the `+` dropdown button and there will be an option to open an R terminal. Open the R terminal and in the left-hand menu click the Explorer button (top button with paper icon) and navigate to `Scripts/run_jabba_general.R`. Open the script by double-clicking on the file and you can run the code line by line using the `ctrl+enter` key shortcut. 
 
-If you prefer to work in RStudio, in the terminal window (not R terminal), type `rserver` and when prompted open the new port in the browers. This will open a session of RStudio Server. Code and files can be run and interacted with as in a regular RStudio workspace.  
+If you prefer to work in RStudio, in the terminal window (not R terminal), type `rserver` and when prompted open the new port in the browers. This will open a session of RStudio Server. Code and files can be run and interacted with as in a regular RStudio workspace. 
+#### Local Machine
+There are two recommended ways to run the code, locally on your personal computer or in the repository using the codespaces. To run locally, you will need to make sure you have the latest version of [JAGS](https://sourceforge.net/projects/mcmc-jags/) installed on your computer and clone the [Deep7-2024-WPSAR](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR) repository or download as [main.zip](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR/archive/refs/heads/main.zip). 
+
+If you do not wish to install JAGS, you can run all the code in a virtual machine through the Github Codespaces. 
 
 ## Inputs  
 
