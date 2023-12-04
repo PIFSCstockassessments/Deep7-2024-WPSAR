@@ -19,10 +19,10 @@
 		  },
 	// // for quarto cli
 	     // more info: https://github.com/rocker-org/devcontainer-features/blob/main/src/quarto-cli/README.md
-	     "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
+	     "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {}
 
 		 //to use Rstudio as IDE instead of VS code
-		 "ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {}
+		// "ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {}
 	 },
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
