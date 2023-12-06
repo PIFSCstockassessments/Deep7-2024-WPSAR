@@ -5,11 +5,12 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "ghcr.io/rocker-org/devcontainer/r-ver:4.3", //commma needed if other sections are used.
 
-	"hostRequirements": {
-		"cpus": 8,
-		"memory": "8gb",
-		"storage": "32gb"
-	 },
+	// hostRequirements to set a minimum for machine type
+	//"hostRequirements": {
+	//	"cpus": 8,
+	//	"memory": "8gb",
+	//	"storage": "32gb"
+	// },
 	 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
