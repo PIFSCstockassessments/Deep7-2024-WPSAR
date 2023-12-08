@@ -1,7 +1,8 @@
 # Main Hawaiian Islands Deep 7 2024 Assessment
 This repository hosts the materials needed to run the base case model for the Deep 7 2024 stock assessment report. 
 
-## Set up
+## Set up  
+There are two recommended ways to run the code, locally on your personal computer or in the repository using the codespaces.  
 #### Codespaces 
 The Codespaces environment allows you to run all model code using a virtual machine and all necessary packages are pre-loaded in the environment. There is no setup involved with this method and is the recommended approach. 
 
@@ -11,7 +12,7 @@ If you prefer to work in RStudio, in the bash terminal window (not R terminal), 
 
 
 #### Local Machine
-There are two recommended ways to run the code, locally on your personal computer or in the repository using the codespaces. To run locally, you will need to make sure you have the latest version of [JAGS](https://sourceforge.net/projects/mcmc-jags/) installed on your computer and clone the [Deep7-2024-WPSAR](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR) repository or download as [main.zip](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR/archive/refs/heads/main.zip). 
+To run locally, you will need to make sure you have the latest version of [JAGS](https://sourceforge.net/projects/mcmc-jags/) installed on your computer and clone the [Deep7-2024-WPSAR](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR) repository or download as [main.zip](https://github.com/PIFSCstockassessments/Deep7-2024-WPSAR/archive/refs/heads/main.zip). R code can be run locally using your preferred R IDE.
 
 If you do not wish to install JAGS, you can run all the code in a virtual machine through the Github Codespaces. 
 
@@ -36,7 +37,7 @@ Use the R script `./Scripts/run_jabba_general.R` to read in all data, run the ba
 remotes::install_github("PIFSCstockassessments/JABBA", ref="PIFSC-dev")
 ```
 
-Descriptions of all modifications and additions to the JABBA code can be found in the README of the [JABBA repository](https://github.com/PIFSCstockassessments/JABBA).
+Descriptions of all modifications and additions to the JABBA code can be found in the README of the [JABBA repository](https://github.com/PIFSCstockassessments/JABBA/tree/PIFSC-dev).
 
 
 ## Github Disclaimer
