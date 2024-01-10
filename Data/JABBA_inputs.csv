@@ -1,2 +1,4 @@
 Scenario,model.type,add.catch.cv,catch.cv,catch.error,catch.adj.lwr,catch.adj.upr,r.prior.mu,r.prior.cv,k.prior.mu,k.prior.cv,psi.prior.mu,psi.prior.cv,psi.prior.dist,sets.var_1,sets.var_2,cpue.lambda.frs,cpue.lambda.bfish,shape.cv,sigma.est,nsig.off.ind,fixed.obsE,sigma.proc,BmsyK,bfrac,sigmaproc_bound
-001_Base_case,Pella,TRUE,0.13,random,1,1,0.096,0.325,9.138548,1,0.75,0.25,lognormal,1,1,1,1,0.098,TRUE,1,0.001,TRUE,0.329,0.867,0.2
+001_Base_case,Pella_m,TRUE,0.13,random,1,1,0.096,0.66,9.138548,1,0.75,0.5,lognormal,1,1,1,1,0.2,TRUE,1,0.001,TRUE,0.329,0.867,0.2
+,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,
