@@ -14,7 +14,7 @@ scenario = "001_Base_case"
 
 #Create directory for model run
 if(!dir.exists(file.path(main_dir, "Model", scenario))){
-  dir.create(file.path(main_dir, "Model", scenario))
+  dir.create(file.path(main_dir, "Model", scenario), recursive = TRUE)
 }
 
 #File with input parameter values
