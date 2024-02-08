@@ -21,7 +21,7 @@
 		// to install r packages using pak
 		// more info: https://github.com/rocker-org/devcontainer-features/blob/main/src/r-packages/README.md
 		 "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-			"packages": "pacman,quarto,this.path,magrittr,dplyr,stringr,ggplot2,rjags,PIFSCstockassessments/JABBA@PIFSC-dev,knitr,gt,GGally,here",
+			"packages": "pacman,quarto,this.path,magrittr,dplyr,stringr,ggplot2,rjags,PIFSCstockassessments/JABBA@v2.2.9.1,knitr,gt,GGally,here",
 			 "installSystemRequirements": true
 		  },
 	// // for quarto cli
